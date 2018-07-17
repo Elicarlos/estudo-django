@@ -1,18 +1,28 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.template import loader
+from django.http import Http404
 from .models import Pergunta
-from django.http import HttpResponse
 
 # Create your views here.
 # 1 aqui
 
 def index(request):
-    return render(request, 'postagens/index.html')
-
+    latest_question_list = Pergunta.objects.order_by('-data_publicacao')[:5]
+    template = loader.get_template('postagens/index.html')
+    context = {'latest_question_list': latest_question_list, }
+    return render(request, 'postagens/index.html', context)
 
 # ...
-def detalhes(request):
-    return render(request, 'postagens/detalhes.html')
+def detalhes(request, pergunta):
+    try:
+        pergunta = Pergunta.objects.get(pk=pergunta)
+    except Pergunta.DoesNotExist:
+        raise Http404("A pergunta nao existe")
+    return render(request, 'postagens/detalhes.html', { 'pergunta' : pergunta})
 
-def contatos(request):
-    return render(request, 'postagens/contatos.html')
+def resultados(request):
+    response = "Voce esta vendo os resultados da pesquisa %s ."
+    return HttpResponse(response % pergunta)
+
+def votos(request):
+    return HttpResponse("Voce esta votando %s ." %pergunta)

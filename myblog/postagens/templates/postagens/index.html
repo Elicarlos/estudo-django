@@ -1,1 +1,14 @@
 sou o index
+
+{% if latest_question_list %}
+  <ul>
+    {% for pergunta in latest_question_list %}
+    <li><a href="/postagens/{{ pergunta }}">{{ pergunta.pergunta_texto}}</a></li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Sem postagens</p>
+
+{% endif %}
+
+<h1>Lembrar de voltar para o documentação parte 4</h1>
